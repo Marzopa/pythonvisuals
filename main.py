@@ -1,24 +1,24 @@
+from PIL import Image, ImageDraw
 import numpy as np
-import cv2
-import moviepy.editor as mpy
 
+# Create an empty canvas
+width, height = 1920, 1080
+canvas = Image.new('RGB', (width, height), 'black')
+draw = ImageDraw.Draw(canvas)
 
-def generate_frame(t):
-    # Create an empty canvas
-    width, height = 640, 480
-    canvas = np.zeros((height, width, 3), dtype=np.uint8)
+# Draw some random lines
+for _ in range(50):
+    x1, y1 = np.random.randint(0, width), np.random.randint(0, height)
+    x2, y2 = np.random.randint(0, width), np.random.randint(0, height)
+    color = (np.random.randint(0, 256), np.random.randint(0, 256), np.random.randint(0, 256))
+    draw.line((x1, y1, x2, y2), fill=color, width=3)
 
-    # Draw some animated circles
-    for _ in range(50):
-        center = (np.random.randint(0, width), np.random.randint(0, height))
-        color = (np.random.randint(0, 256), np.random.randint(0, 256), np.random.randint(0, 256))
-        radius = int(5 + 45 * np.abs(np.sin(t)))
-        cv2.circle(canvas, center, radius, color, -1)
+# Draw some random rectangles
+for _ in range(20):
+    x1, y1 = np.random.randint(0, width), np.random.randint(0, height)
+    x2, y2 = np.random.randint(x1, width), np.random.randint(y1, height)
+    color = (np.random.randint(0, 256), np.random.randint(0, 256), np.random.randint(0, 256))
+    draw.rectangle((x1, y1, x2, y2), outline=color, width=3)
 
-    return canvas
-
-# Create a video
-duration = 10  # Duration in seconds
-fps = 24  # Frames per second
-clip = mpy.VideoClip(lambda t: generate_frame(t), duration=duration)
-clip.write_videofile("abstract_art.mp4", fps=fps)
+# Show the image
+canvas.show()
