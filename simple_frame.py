@@ -4,7 +4,7 @@ import numpy as np
 
 def generate_frame():
     # Create an empty canvas
-    width, height = 1920, 1080
+    width, height = 120, 120
     canvas = Image.new('RGB', (width, height), 'black')
     draw = ImageDraw.Draw(canvas)
 
