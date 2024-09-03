@@ -9,7 +9,9 @@ class MyTestCase(unittest.TestCase):
 
     def test_draw_loteria(self):
         images = [generate_frame(), generate_frame(), generate_frame(), generate_frame()]
-        loteria = draw_loteria(2, 2, images)
+        loteria = draw_loteria(2, 2, images, 10)
+        loteria.show()
+
 
 if __name__ == '__main__':
     unittest.main()
