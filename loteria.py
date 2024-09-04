@@ -33,6 +33,9 @@ def draw_loteria(rows: int, cols: int, images: list[Image], thickness: int = 20)
     # This section creates the top and left edges
     draw.line((0, thick_adjustment, dimensions[0], thick_adjustment), fill='white', width=thickness)
     draw.line((thick_adjustment, 0, thick_adjustment, dimensions[1]), fill='white', width=thickness)
+    # This one the bottom and right edges
+    draw.line((0, dimensions[1]-thick_adjustment, dimensions[0], dimensions[1]-thick_adjustment), fill='white', width=thickness)
+    draw.line((dimensions[0]-thick_adjustment, 0, dimensions[0]-thick_adjustment, dimensions[1]), fill='white', width=thickness)
 
     for image in images:
         canvas.paste(image)
