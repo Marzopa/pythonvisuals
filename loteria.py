@@ -23,19 +23,20 @@ def draw_loteria(rows: int, cols: int, images: list[Image], thickness: int = 20)
     """
     if rows * cols != len(images):
         raise ValueError("Incorrect number of images")
+
     img_size: tuple = images[0].size
     dimensions = calc_dimensions(rows, cols, img_size, thickness)
-    thick_adjustment = thickness // 2  # This is so thickness of borders is respected
-
     canvas = Image.new('RGB', dimensions, 'black')
     draw = ImageDraw.Draw(canvas)
 
+    thick_adjustment = thickness * 2  # This is so thickness of borders is respected
+
     # This section creates the top and left edges
-    draw.line((0, thick_adjustment, dimensions[0], thick_adjustment), fill='white', width=thickness)
-    draw.line((thick_adjustment, 0, thick_adjustment, dimensions[1]), fill='white', width=thickness)
+    draw.line((0, 0, dimensions[0], 0), fill='white', width=thick_adjustment)
+    draw.line((0, 0, 0, dimensions[1]), fill='white', width=thick_adjustment)
     # This one the bottom and right edges
-    draw.line((0, dimensions[1]-thick_adjustment, dimensions[0], dimensions[1]-thick_adjustment), fill='white', width=thickness)
-    draw.line((dimensions[0]-thick_adjustment, 0, dimensions[0]-thick_adjustment, dimensions[1]), fill='white', width=thickness)
+    draw.line((0, dimensions[1], dimensions[0], dimensions[1]), fill='white', width=thick_adjustment)
+    draw.line((dimensions[0], 0, dimensions[0], dimensions[1]), fill='white', width=thick_adjustment)
 
     # Draw inner column edges
     for c in range(1, cols):
