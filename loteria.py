@@ -23,8 +23,8 @@ def draw_loteria(rows: int, cols: int, images: list[Image], thickness: int = 20)
     """
     if rows * cols != len(images):
         raise ValueError("Incorrect number of images")
-
-    dimensions = calc_dimensions(rows, cols, images[0].size, thickness)
+    img_size: tuple = images[0].size
+    dimensions = calc_dimensions(rows, cols, img_size, thickness)
     thick_adjustment = thickness // 2  # This is so thickness of borders is respected
 
     canvas = Image.new('RGB', dimensions, 'black')
@@ -36,6 +36,11 @@ def draw_loteria(rows: int, cols: int, images: list[Image], thickness: int = 20)
     # This one the bottom and right edges
     draw.line((0, dimensions[1]-thick_adjustment, dimensions[0], dimensions[1]-thick_adjustment), fill='white', width=thickness)
     draw.line((dimensions[0]-thick_adjustment, 0, dimensions[0]-thick_adjustment, dimensions[1]), fill='white', width=thickness)
+
+    # Draw inner edges
+    for c in range(1, cols):
+        y = dimensions[1]
+        draw.line((c*(thickness+img_size[0]), 0, c*(thickness+img_size[0]), y), fill='white', width=thickness)
 
     for image in images:
         canvas.paste(image)
