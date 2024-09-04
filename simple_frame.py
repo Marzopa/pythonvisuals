@@ -2,9 +2,9 @@ from PIL import Image, ImageDraw
 import numpy as np
 
 
-def generate_frame():
+def generate_frame(size: tuple[int, int] = (120, 120)):
     # Create an empty canvas
-    width, height = 120, 120
+    width, height = size[0], size[1]
     canvas = Image.new('RGB', (width, height), 'black')
     draw = ImageDraw.Draw(canvas)
 
