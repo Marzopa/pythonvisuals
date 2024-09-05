@@ -59,15 +59,19 @@ def draw_loteria(rows: int, cols: int, images: list[Image], thickness: int = 20)
     canvas = Image.new('RGB', dimensions, 'black')
     draw = ImageDraw.Draw(canvas)
 
-    draw_edges(draw, dimensions, img_size, rows, cols, thickness)
-
     # Place images in grid place
     row_place = 0
     col_place = 0
     for image_index in range(len(images)):
-        if col_place % rows == 0:
+        if col_place == cols:
             row_place += 1
             col_place = 0
-        canvas.paste(images[image_index], (col_place*(image_index+thickness), row_place*(image_index+thickness)))
+
+        canvas.paste(images[image_index], ((col_place * (thickness + img_size[0]) + thickness),
+                                           (row_place * (thickness + img_size[1]) + thickness)))
+
         col_place += 1
+
+    draw_edges(draw, dimensions, img_size, rows, cols, thickness)
+
     return canvas
