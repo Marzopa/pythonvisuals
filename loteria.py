@@ -72,7 +72,6 @@ def draw_loteria(rows: int, cols: int, images: list[Image], thickness: int = 20)
 
         canvas.paste(images[image_index], ((col_place * (thickness + img_size[0]) + thickness),
                                            (row_place * (thickness + img_size[1]) + thickness)))
-
         col_place += 1
 
     draw_edges(draw, dimensions, img_size, rows, cols, thickness)
