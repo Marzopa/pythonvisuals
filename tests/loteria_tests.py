@@ -9,10 +9,10 @@ class MyTestCase(unittest.TestCase):
 
     def test_draw_loteria(self):
         images = []
-        for _ in range(6):
+        for _ in range(9):
             images.append(generate_frame())
 
-        loteria = draw_loteria(2, 3, images, 5)
+        loteria = draw_loteria(3, 3, images, 5)
         loteria.show()
 
 

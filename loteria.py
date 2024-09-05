@@ -23,6 +23,7 @@ def draw_edges(draw: ImageDraw, dimensions: tuple[int, int], img_size: tuple[int
     :param thickness: thickness of lines drawn on the loteria (default 20px)
     """
     thick_adjustment = thickness * 2  # This is so thickness of borders is respected
+    half_thickness = thickness // 2
     # This section creates the top and left edges
     draw.line((0, 0, dimensions[0], 0), fill='white', width=thick_adjustment)
     draw.line((0, 0, 0, dimensions[1]), fill='white', width=thick_adjustment)
@@ -33,12 +34,14 @@ def draw_edges(draw: ImageDraw, dimensions: tuple[int, int], img_size: tuple[int
     # Draw inner column edges
     for c in range(1, cols):
         y = dimensions[1]
-        draw.line((c * (thickness + img_size[0]), 0, c * (thickness + img_size[0]), y), fill='white', width=thickness)
+        draw.line((c * (thickness + img_size[0]) + half_thickness, 0,
+                   c * (thickness + img_size[0]) + half_thickness, y), fill='white', width=thickness)
 
     # Draw inner row edges
     for r in range(1, rows):
         x = dimensions[0]
-        draw.line((0, r * (thickness + img_size[1]), x, r * (thickness + img_size[1])), fill='white', width=thickness)
+        draw.line((x, r * (thickness + img_size[1]) + half_thickness,
+                   0, r * (thickness + img_size[1]) + half_thickness), fill='white', width=thickness)
 
 
 def draw_loteria(rows: int, cols: int, images: list[Image], thickness: int = 20) -> Image:
