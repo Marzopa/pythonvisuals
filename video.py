@@ -1,9 +1,10 @@
 from PIL import Image, ImageDraw
 import numpy as np
 import moviepy.editor as mpy
+from loteria import draw_loteria
 
 # Parameters
-width, height = 1920, 1080
+width, height = 120, 120
 duration = 10  # Duration in seconds
 fps = 24  # Frames per second
 total_frames = duration * fps
@@ -35,6 +36,30 @@ def generate_frame(t):
         draw.rectangle((x1, y1, x2, y2), outline=color, width=3)
 
     return np.array(canvas)
+
+
+def stitch_videos(clips: list[mpy.VideoFileClip], rows: int, cols: int, thickness: int = 20) -> mpy.ImageSequenceClip:
+    """
+    :param clips: a list of videos opened from file, assumes are all same length
+    :param rows: number of rows in final video
+    :param cols: number of columns in final video
+    :param thickness: thickness of borders (default 20)
+    :return: a video clip with the clips stitched in a loteria grid
+    """
+    if len(clips) != rows * cols:
+        raise ValueError("Wrong number of clips")
+    video_length = int(clips[0].duration * clips[0].fps)
+    final_frames = []
+
+    for i in range(video_length):
+        frames = []
+        for clip in clips:
+            frames.append(Image.fromarray(clip.get_frame(i / clips[0].fps)))
+
+        final_frames.append(draw_loteria(rows, cols, frames))
+
+    frames = [np.array(img) for img in final_frames]
+    return mpy.ImageSequenceClip(frames, fps=24)
 
 
 # Create a video using moviepy
