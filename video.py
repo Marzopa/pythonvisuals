@@ -40,7 +40,7 @@ def generate_frame(t):
 
 def stitch_videos(clips: list[mpy.VideoFileClip], rows: int, cols: int, thickness: int = 20) -> mpy.ImageSequenceClip:
     """
-    :param clips: a list of videos opened from file, assumes are all same length
+    :param clips: a list of videos opened from file, assumes are all same length and fps
     :param rows: number of rows in final video
     :param cols: number of columns in final video
     :param thickness: thickness of borders (default 20)
@@ -59,7 +59,7 @@ def stitch_videos(clips: list[mpy.VideoFileClip], rows: int, cols: int, thicknes
         final_frames.append(draw_loteria(rows, cols, frames))
 
     frames = [np.array(img) for img in final_frames]
-    return mpy.ImageSequenceClip(frames, fps=24)
+    return mpy.ImageSequenceClip(frames, fps=clips[0].fps)
 
 
 # Create a video using moviepy
