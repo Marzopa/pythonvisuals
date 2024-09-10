@@ -12,7 +12,7 @@ class MyTestCase(unittest.TestCase):
         for _ in range(9):
             images.append(generate_frame())
 
-        loteria = draw_loteria(3, 3, images, 5)
+        loteria = draw_loteria(3, 3, images, 5, draw_outer=False)
         loteria.show()
 
 

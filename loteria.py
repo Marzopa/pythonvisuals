@@ -13,7 +13,8 @@ def calc_dimensions(rows: int, cols: int, size: tuple[int, int], thickness: int 
 
 
 def draw_edges(draw: ImageDraw, dimensions: tuple[int, int], img_size: tuple[int, int],
-               rows: int, cols: int, thickness: int = 20) -> None:
+               rows: int, cols: int, thickness: int = 20,
+               draw_inner=True, draw_outer=True) -> None:
     """
     :param draw: the draw object for a canvas
     :param dimensions: a tuple (width, height) for the entire, final image
@@ -21,36 +22,43 @@ def draw_edges(draw: ImageDraw, dimensions: tuple[int, int], img_size: tuple[int
     :param rows: number of image rows
     :param cols: number of image columns
     :param thickness: thickness of lines drawn on the loteria (default 20px)
+    :param draw_inner: boolean to indicate whether inner borders should be drawn
+    :param draw_outer: boolean to indicate whether outer borders should be drawn
     """
     thick_adjustment = thickness * 2  # This is so thickness of borders is respected
     half_thickness = thickness // 2
-    # This section creates the top and left edges
-    draw.line((0, 0, dimensions[0], 0), fill='white', width=thick_adjustment)
-    draw.line((0, 0, 0, dimensions[1]), fill='white', width=thick_adjustment)
-    # This one the bottom and right edges
-    draw.line((0, dimensions[1], dimensions[0], dimensions[1]), fill='white', width=thick_adjustment)
-    draw.line((dimensions[0], 0, dimensions[0], dimensions[1]), fill='white', width=thick_adjustment)
 
-    # Draw inner column edges
-    for c in range(1, cols):
-        y = dimensions[1]
-        draw.line((c * (thickness + img_size[0]) + half_thickness, 0,
-                   c * (thickness + img_size[0]) + half_thickness, y), fill='white', width=thickness)
+    if draw_inner:
+        # Draw inner column edges
+        for c in range(1, cols):
+            y = dimensions[1]
+            draw.line((c * (thickness + img_size[0]) + half_thickness, 0,
+                       c * (thickness + img_size[0]) + half_thickness, y), fill='white', width=thickness)
 
-    # Draw inner row edges
-    for r in range(1, rows):
-        x = dimensions[0]
-        draw.line((x, r * (thickness + img_size[1]) + half_thickness,
-                   0, r * (thickness + img_size[1]) + half_thickness), fill='white', width=thickness)
+        # Draw inner row edges
+        for r in range(1, rows):
+            x = dimensions[0]
+            draw.line((x, r * (thickness + img_size[1]) + half_thickness,
+                       0, r * (thickness + img_size[1]) + half_thickness), fill='white', width=thickness)
+
+    if draw_outer:
+        # This section creates the top and left edges
+        draw.line((0, 0, dimensions[0], 0), fill='white', width=thick_adjustment)
+        draw.line((0, 0, 0, dimensions[1]), fill='white', width=thick_adjustment)
+        # This one the bottom and right edges
+        draw.line((0, dimensions[1], dimensions[0], dimensions[1]), fill='white', width=thick_adjustment)
+        draw.line((dimensions[0], 0, dimensions[0], dimensions[1]), fill='white', width=thick_adjustment)
 
 
-def draw_loteria(rows: int, cols: int, images: list[Image], thickness: int = 20) -> Image:
+def draw_loteria(rows: int, cols: int, images: list[Image], thickness: int = 20,
+                 draw_inner: bool = True, draw_outer: bool = True) -> Image:
     """
     :param rows: number of rows in loteria
     :param cols: number of columns in loteria
     :param images: a list of image objects to draw loteria from, assumes all image dimensions are the same
     :param thickness: thickness of lines drawn on the loteria (default 20px)
-    :return: an image of the loteria
+    :param draw_inner: boolean to indicate whether inner borders should be drawn
+    :param draw_outer: boolean to indicate whether outer borders should be drawn
     :raises: ValueError if number of images isn't the same as the number of squares in loteria
     :return: an image (canvas) of the loteria
     """
@@ -74,6 +82,6 @@ def draw_loteria(rows: int, cols: int, images: list[Image], thickness: int = 20)
                                            (row_place * (thickness + img_size[1]) + thickness)))
         col_place += 1
 
-    draw_edges(draw, dimensions, img_size, rows, cols, thickness)
+    draw_edges(draw, dimensions, img_size, rows, cols, thickness, draw_inner, draw_outer)
 
     return canvas
