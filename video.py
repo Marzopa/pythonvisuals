@@ -56,7 +56,7 @@ def stitch_videos(clips: list[mpy.VideoFileClip], rows: int, cols: int, thicknes
         for clip in clips:
             frames.append(Image.fromarray(clip.get_frame(i / clips[0].fps)))
 
-        final_frames.append(draw_loteria(rows, cols, frames))
+        final_frames.append(draw_loteria(rows, cols, frames, thickness))
 
     frames = [np.array(img) for img in final_frames]
     return mpy.ImageSequenceClip(frames, fps=clips[0].fps)
