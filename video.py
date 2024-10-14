@@ -5,9 +5,9 @@ from loteria import draw_loteria
 
 # Parameters
 width, height = 120, 120
-duration = 10  # Duration in seconds
+dur = 10  # Duration in seconds
 fps = 24  # Frames per second
-total_frames = duration * fps
+total_frames = dur * fps
 
 
 def generate_frame(t):
@@ -38,12 +38,15 @@ def generate_frame(t):
     return np.array(canvas)
 
 
-def stitch_videos(clips: list[mpy.VideoFileClip], rows: int, cols: int, thickness: int = 20) -> mpy.ImageSequenceClip:
+def stitch_videos(clips: list[mpy.VideoFileClip], rows: int, cols: int, thickness: int = 20,
+                  draw_inner: bool = True, draw_outer: bool = True) -> mpy.ImageSequenceClip:
     """
     :param clips: a list of videos opened from file, assumes are all same length and fps
     :param rows: number of rows in final video
     :param cols: number of columns in final video
     :param thickness: thickness of borders (default 20)
+    :param draw_inner: whether to draw inner edges or not
+    :param draw_outer: whether to draw outer edges or not
     :return: a video clip with the clips stitched in a loteria grid
     """
     if len(clips) != rows * cols:
@@ -56,12 +59,24 @@ def stitch_videos(clips: list[mpy.VideoFileClip], rows: int, cols: int, thicknes
         for clip in clips:
             frames.append(Image.fromarray(clip.get_frame(i / clips[0].fps)))
 
-        final_frames.append(draw_loteria(rows, cols, frames, thickness))
+        final_frames.append(draw_loteria(rows, cols, frames, thickness, draw_inner=draw_inner, draw_outer=draw_outer))
 
     frames = [np.array(img) for img in final_frames]
     return mpy.ImageSequenceClip(frames, fps=clips[0].fps)
 
 
+def generate_numbers_video(rows: int, cols: int, duration: int, thickness: int = 20, fps: int = 24):
+    """
+    :param rows: number of rows in video
+    :param cols: number of columns in video
+    :param duration: duration of video in seconds
+    :param fps: frames per second (duh)
+    :param thickness: thickness of borders in pixels
+    :return: a video clip with the clips stitched in a loteria grid
+    """
+    pass
+
+
 # Create a video using moviepy
-clip = mpy.VideoClip(lambda t: generate_frame(t), duration=duration)
+clip = mpy.VideoClip(lambda t: generate_frame(t), duration=dur)
 clip.write_videofile("abstract_art.mp4", fps=fps)
