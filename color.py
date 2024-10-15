@@ -12,6 +12,8 @@ def randomize_modifier(frame: np.ndarray, t: int = 10) -> np.ndarray:
     """
     if frame.shape[2] != 3:
         raise ValueError('Expected an RGB image with 3 channels.')
+    if t == 0:
+        return frame
 
     noise = np.random.randint(-t, t, frame.shape, dtype=np.int16)
     modified_frame = frame.astype(np.int16) + noise

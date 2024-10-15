@@ -19,11 +19,11 @@ class MyTestCase(unittest.TestCase):
 
     def test_stitch_videos(self):
         videos = []
-        for _ in range(80):
-            clip = mpy.VideoFileClip("C:/Users/oscar/Desktop/extra/Code/pythonvisuals/old_renders/smalldumb.mp4", target_resolution=(18,46))
+        for _ in range(90):
+            clip = mpy.VideoFileClip("shit.mp4", target_resolution=(18,46))
             videos.append(clip)
-        video = stitch_videos(videos, 8, 10, thickness=3, draw_inner=False)
-        video.write_videofile("shit.mp4", fps=24, codec="libx264")
+        video = stitch_videos(videos, 9, 10, thickness=3, draw_inner=False, draw_outer=False)
+        video.write_videofile("shit2.mp4", fps=24, codec="libx264")
 
 
 if __name__ == '__main__':
