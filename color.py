@@ -3,7 +3,7 @@ import numpy as np
 from typing import Callable
 
 
-def randomize_modifier_chatgpt(frame: np.ndarray, t: int = 10) -> np.ndarray:
+def randomize_modifier(frame: np.ndarray, t: int = 10) -> np.ndarray:
     """
     Applies random noise to the RGB channels of an image while preserving the alpha channel if present.
     :param frame: A numpy array representing an image (or frame of a video)
