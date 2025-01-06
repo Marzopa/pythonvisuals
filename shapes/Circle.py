@@ -27,10 +27,15 @@ class Circle:
         return x1, y1, x2, y2
 
     def update_frame(self):
-        self._center[0] += self._velocity[0] * math.cos(self._velocity[1])
-        self._center[1] -= self._velocity[0] * math.sin(self._velocity[1])
+        if self._radius > 0:
+            self._center[0] += self._velocity[0] * math.cos(self._velocity[1])
+            self._center[1] -= self._velocity[0] * math.sin(self._velocity[1])
 
-        self._radius += self._scaling
+            self._radius += self._scaling
+
+        else:
+            self._radius = 0
 
     def draw_on_frame(self, draw: ImageDraw) -> None:
-        draw.ellipse(self.get_bounding_box(), fill=self.color, outline=self.color)
+        if self._radius > 0:
+            draw.ellipse(self.get_bounding_box(), fill=self.color, outline=self.color)
