@@ -5,19 +5,31 @@ from PIL import ImageDraw
 
 class Circle:
     def __init__(self, radius: float, color: tuple[int, int, int],
-                 center: list[int], velocity: tuple[int, float] = None, scaling: int = 0):
+                 center: list[int], velocity: tuple[int, float] = None, scaling: int = 0,
+                 gravity: float = 0, collisions: tuple[int, int] = (0, 0)):
         """
-        :param radius: the radius of the circle
         :param color: a tuple with RGB values indicating the color of the circle
+        :param radius: the radius of the circle
         :param center: a list with x and y coordinates of the center
         :param velocity: [magnitude in px/s, direction in radians], zero by default
         :param scaling: how many pixels the radius increases per frame, zero by default
+        :param gravity: gravitational force applied to the circle in pixels/frame^2, zero by default
+        :param collisions: width and height of screen for collisions, zero by default
         """
         self.color: tuple[int, int, int] = color
         self._radius: float = radius
         self._center: list[int] = center
-        self._velocity: tuple[int, float] = velocity[0], velocity[1] % (2*math.pi) if velocity else (0,0)
         self._scaling: int = scaling
+        self._gravity: float = gravity
+        self._collisions: tuple[int, int] = collisions
+        # Number of frames the circle has been alive
+        self._time: int = 0
+
+        self._horizontal_velocity: float = 0
+        self._vertical_velocity: float = 0
+        if velocity:
+            self._horizontal_velocity = velocity[0] * math.cos(velocity[1])
+            self._vertical_velocity = velocity[0] * math.sin(velocity[1])
 
     def get_bounding_box(self) -> tuple[int, int, int, int]:
         x1 = int(self._center[0]-self._radius)
@@ -26,15 +38,44 @@ class Circle:
         y2 = int(self._center[1]+self._radius)
         return x1, y1, x2, y2
 
+    def detect_border_collision(self) -> tuple[int, ...]:
+        x1, y1, x2, y2 = self.get_bounding_box()
+        ans: list[int] = [1, 1]
+        if self._collisions == (0, 0):
+            return tuple(ans)
+
+        if x1 <= 0 or x2 >= self._collisions[0]:
+            ans[0] = -1
+        if y2 >= self._collisions[1]:
+            ans[1] = 0
+        return tuple(ans)
+
     def update_frame(self):
-        if self._radius > 0:
-            self._center[0] += self._velocity[0] * math.cos(self._velocity[1])
-            self._center[1] -= self._velocity[0] * math.sin(self._velocity[1])
-
-            self._radius += self._scaling
-
-        else:
+        if self._radius < 0:
             self._radius = 0
+
+        self._radius += self._scaling
+        border_collision: tuple[int, ...] = self.detect_border_collision()
+
+        self._horizontal_velocity *= border_collision[0]
+        self._vertical_velocity *= border_collision[1]
+
+        # Horizontal component of displacement
+        # self._center[0] += self._horizontal_velocity * border_collision[0]
+        if border_collision[0] == -1:
+            self._horizontal_velocity *= -1
+            # Adjust the position to prevent sticking or jitter
+            if self._center[0] - self._radius <= 0:
+                self._center[0] = self._radius
+            elif self._center[0] + self._radius >= self._collisions[0]:
+                self._center[0] = self._collisions[0] - self._radius
+
+        self._center[0] += self._horizontal_velocity
+
+        # Vertical component of displacement
+        self._center[1] -= (self._vertical_velocity + (self._gravity * self._time)) * border_collision[1]
+
+        self._time += 1
 
     def draw_on_frame(self, draw: ImageDraw) -> None:
         if self._radius > 0:
