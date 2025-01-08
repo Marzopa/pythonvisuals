@@ -63,7 +63,6 @@ class Circle:
         # Horizontal component of displacement
         # self._center[0] += self._horizontal_velocity * border_collision[0]
         if border_collision[0] == -1:
-            self._horizontal_velocity *= -1
             # Adjust the position to prevent sticking or jitter
             if self._center[0] - self._radius <= 0:
                 self._center[0] = self._radius
