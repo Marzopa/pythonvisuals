@@ -85,8 +85,8 @@ class Circle:
             self._vertical_velocity += self._gravity
         self._center[1] -= self._vertical_velocity
 
-        self._horizontal_velocity *= self._friction
-        self._vertical_velocity *= self._friction
+        if self._vertical_velocity == 0:
+            self._horizontal_velocity *= self._friction
 
         self._time += 1
 
