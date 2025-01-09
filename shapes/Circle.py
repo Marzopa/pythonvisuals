@@ -6,7 +6,7 @@ from PIL import ImageDraw
 class Circle:
     def __init__(self, radius: float, color: tuple[int, int, int],
                  center: list[int], velocity: tuple[int, float] = None, scaling: int = 0,
-                 gravity: float = 0, collisions: tuple[int, int] = (0, 0)):
+                 gravity: float = 0, collisions: tuple[int, int] = (0, 0), friction: float = 1):
         """
         :param color: a tuple with RGB values indicating the color of the circle
         :param radius: the radius of the circle
@@ -15,7 +15,10 @@ class Circle:
         :param scaling: how many pixels the radius increases per frame, zero by default
         :param gravity: gravitational force applied to the circle in pixels/frame^2, zero by default
         :param collisions: width and height of screen for collisions, zero by default
+        :param friction: between zero and one (default) a multiplier by which to multiply the velocities after each frame
         """
+        if friction < 0 or friction > 1:
+            raise ValueError("Friction must be between 0 and 1")
         self.color: tuple[int, int, int] = color
         self._radius: float = radius
         self._center: list[int] = center
@@ -24,7 +27,7 @@ class Circle:
         self._collisions: tuple[int, int] = collisions
         # Number of frames the circle has been alive
         self._time: int = 0
-
+        self._friction: float = friction
         self._horizontal_velocity: float = 0
         self._vertical_velocity: float = 0
         if velocity:
@@ -48,6 +51,8 @@ class Circle:
             ans[0] = -1
         if y2 >= self._collisions[1]:
             ans[1] = 0
+        if y1 <= 0:
+            ans[1] = -1
         return tuple(ans)
 
     def update_frame(self):
@@ -58,21 +63,30 @@ class Circle:
         border_collision: tuple[int, ...] = self.detect_border_collision()
 
         self._horizontal_velocity *= border_collision[0]
-        self._vertical_velocity *= border_collision[1]
 
         # Horizontal component of displacement
-        # self._center[0] += self._horizontal_velocity * border_collision[0]
         if border_collision[0] == -1:
-            # Adjust the position to prevent sticking or jitter
+            # Adjust the position to prevent jitter
             if self._center[0] - self._radius <= 0:
                 self._center[0] = self._radius
             elif self._center[0] + self._radius >= self._collisions[0]:
                 self._center[0] = self._collisions[0] - self._radius
-
         self._center[0] += self._horizontal_velocity
 
         # Vertical component of displacement
-        self._center[1] -= (self._vertical_velocity + (self._gravity * self._time)) * border_collision[1]
+        if border_collision[1] == -1:
+            # Adjust position to prevent jitter
+            self._vertical_velocity *= -1
+            if self._center[1] + self._radius <= 0:
+                self._center[1] = self._radius
+        if border_collision[1] == 0:
+            self._vertical_velocity = 0
+        if border_collision[1] == 1:
+            self._vertical_velocity += self._gravity
+        self._center[1] -= self._vertical_velocity
+
+        self._horizontal_velocity *= self._friction
+        self._vertical_velocity *= self._friction
 
         self._time += 1
 
