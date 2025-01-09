@@ -19,9 +19,18 @@ class Circle:
         """
         if friction < 0 or friction > 1:
             raise ValueError("Friction must be between 0 and 1")
+        if radius <= 0:
+            raise ValueError("Radius must be positive")
+        if len(center) != 2:
+            raise ValueError("Center must have exactly two elements")
+
         self.color: tuple[int, int, int] = color
         self._radius: float = radius
+
         self._center: list[int] = center
+        if collisions != (0, 0) and (center[0] <= 0 or center[0] >= collisions[0]) or (center[1] <= 0 or center[1] >= collisions[1]):
+            self._center = [collisions[0]//2, collisions[1]//2]
+
         self._scaling: int = scaling
         self._gravity: float = gravity
         self._collisions: tuple[int, int] = collisions
