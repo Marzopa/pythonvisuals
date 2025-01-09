@@ -89,7 +89,10 @@ class Circle:
             if self._center[1] + self._radius <= 0:
                 self._center[1] = self._radius
         if border_collision[1] == 0:
-            self._vertical_velocity = 0
+            self._vertical_velocity *= -(self._friction/1.25)
+            if abs(self._vertical_velocity) < 8:  # Threshold for rest
+                self._vertical_velocity = 0
+                # self._center[1] = self._collisions[1] - self._radius
         if border_collision[1] == 1:
             self._vertical_velocity += self._gravity
         self._center[1] -= self._vertical_velocity
