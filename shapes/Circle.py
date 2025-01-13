@@ -51,17 +51,28 @@ class Circle:
         return x1, y1, x2, y2
 
     def detect_border_collision(self) -> tuple[int, ...]:
+        """
+        :return: [1 if no collision or -1 if collision,
+        1 if no collision or 0 if collision against gravity surface or -1 if collision against non-gravity surface]
+        """
         x1, y1, x2, y2 = self.get_bounding_box()
         ans: list[int] = [1, 1]
         if self._collisions == (0, 0):
             return tuple(ans)
-
+        # Horizontal collision
         if x1 <= 0 or x2 >= self._collisions[0]:
             ans[0] = -1
-        if y2 >= self._collisions[1]:
-            ans[1] = 0
-        if y1 <= 0:
+
+        # Vertical collision
+        if self._gravity == 0 and (y2 >= self._collisions[1] or y1 <= 0):
             ans[1] = -1
+
+        if (self._gravity > 0 and y2 >= self._collisions[1]) or (self._gravity < 0 and y1 <= 0):
+            ans[1] = 0
+
+        if (self._gravity > 0 >= y1) or (self._gravity < 0 and y2 <= 0):
+            ans[1] = -1
+
         return tuple(ans)
 
     def update_frame(self):
@@ -88,12 +99,12 @@ class Circle:
             self._vertical_velocity *= -1
             if self._center[1] + self._radius <= 0:
                 self._center[1] = self._radius
-        if border_collision[1] == 0:
+        elif border_collision[1] == 0:
             self._vertical_velocity *= -(self._friction/1.25)
-            if abs(self._vertical_velocity) < 8:  # Threshold for rest
+            if abs(self._vertical_velocity) < 5:  # Threshold for rest
                 self._vertical_velocity = 0
                 # self._center[1] = self._collisions[1] - self._radius
-        if border_collision[1] == 1:
+        elif border_collision[1] == 1:
             self._vertical_velocity += self._gravity
         self._center[1] -= self._vertical_velocity
 

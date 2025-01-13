@@ -15,7 +15,7 @@ def test_circle():
                                   color=(r.randint(0, 255), r.randint(0, 255), r.randint(0, 255)),
                                   center=[960, 540],
                                   velocity=(r.randint(3, 20), r.randint(0, 100) * math.pi / 50),
-                                  gravity=-0.2725, collisions=(1920, 1080), friction=0.99))
+                                  gravity=0, collisions=(1920, 1080), friction=0.99))
     circle_list.append(Circle(radius=75, color=(255, 0, 0), center=[0, 0],
                               velocity=(50, math.pi / 4), collisions=(1920, 1080), friction=0.99, gravity=-0.2725))
 
