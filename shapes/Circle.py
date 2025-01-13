@@ -68,10 +68,10 @@ class Circle:
             ans[1] = -1
 
         if (self._gravity > 0 and y2 >= self._collisions[1]) or (self._gravity < 0 and y1 <= 0):
-            ans[1] = 0
-
-        if (self._gravity > 0 >= y1) or (self._gravity < 0 and y2 <= 0):
             ans[1] = -1
+
+        if (self._gravity < 0 and y2 >= self._collisions[1]) or (self._gravity > 0 >= y1):
+            ans[1] = 0
 
         return tuple(ans)
 
