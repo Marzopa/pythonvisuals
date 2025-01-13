@@ -1,6 +1,7 @@
 import math
 
 from PIL import ImageDraw
+from random import randint
 
 
 class Circle:
@@ -28,8 +29,9 @@ class Circle:
         self._radius: float = radius
 
         self._center: list[int] = center
-        if collisions != (0, 0) and (center[0] <= 0 or center[0] >= collisions[0]) or (center[1] <= 0 or center[1] >= collisions[1]):
-            self._center = [collisions[0]//2, collisions[1]//2]
+        if collisions != (0, 0) and (center[0] <= 0 or center[0] >= collisions[0]) or (
+                center[1] <= 0 or center[1] >= collisions[1]):
+            self._center = [collisions[0] // 2, collisions[1] // 2]
 
         self._scaling: int = scaling
         self._gravity: float = gravity
@@ -44,10 +46,10 @@ class Circle:
             self._vertical_velocity = velocity[0] * math.sin(velocity[1])
 
     def get_bounding_box(self) -> tuple[int, int, int, int]:
-        x1 = int(self._center[0]-self._radius)
-        y1 = int(self._center[1]-self._radius)
-        x2 = int(self._center[0]+self._radius)
-        y2 = int(self._center[1]+self._radius)
+        x1 = int(self._center[0] - self._radius)
+        y1 = int(self._center[1] - self._radius)
+        x2 = int(self._center[0] + self._radius)
+        y2 = int(self._center[1] + self._radius)
         return x1, y1, x2, y2
 
     def detect_border_collision(self) -> tuple[int, ...]:
@@ -100,7 +102,7 @@ class Circle:
             if self._center[1] + self._radius <= 0:
                 self._center[1] = self._radius
         elif border_collision[1] == 0:
-            self._vertical_velocity *= -(self._friction/1.25)
+            self._vertical_velocity *= -(self._friction / 1.25)
             if abs(self._vertical_velocity) < 5:  # Threshold for rest
                 self._vertical_velocity = 0
                 # self._center[1] = self._collisions[1] - self._radius
@@ -115,4 +117,13 @@ class Circle:
 
     def draw_on_frame(self, draw: ImageDraw) -> None:
         if self._radius > 0:
-            draw.ellipse(self.get_bounding_box(), fill=self.color, outline=self.color)
+            n = 3#randint(0, 3)
+            if n == 0:
+                draw.rectangle(self.get_bounding_box(), fill=self.color, outline=self.color)
+            if n == 1:
+                draw.ellipse(self.get_bounding_box(), fill=self.color, outline=self.color)
+            if n == 2:
+                draw.rounded_rectangle(self.get_bounding_box(), fill=self.color, outline=self.color, radius=25)
+            if n == 3:
+                draw.pieslice(self.get_bounding_box(), fill=self.color, outline=self.color, start=randint(0, 90),
+                              end=randint(91, 180))
