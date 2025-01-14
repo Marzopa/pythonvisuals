@@ -20,3 +20,7 @@ def randomize_modifier(frame: np.ndarray, t: int = 10) -> np.ndarray:
     modified_frame = np.clip(modified_frame, 0, 255).astype(np.uint8)
     return modified_frame
 
+
+def glow_modifier():
+    pass
+
