@@ -6,6 +6,7 @@ import random as r
 import numpy as np
 
 from shapes.Circle import Circle
+from color import glow_modifier
 
 
 def test_circle():
@@ -26,7 +27,7 @@ def test_circle():
         for circle in circle_list:
             circle.draw_on_frame(draw)
             circle.update_frame()
-        frames.append(np.array(canvas))
+        frames.append(np.array(glow_modifier(canvas)))
 
     clip = mpy.ImageSequenceClip(frames, fps=60)  # Set your desired fps
 

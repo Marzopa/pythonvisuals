@@ -117,7 +117,7 @@ class Circle:
 
     def draw_on_frame(self, draw: ImageDraw) -> None:
         if self._radius > 0:
-            n = 3#randint(0, 3)
+            n = 1
             if n == 0:
                 draw.rectangle(self.get_bounding_box(), fill=self.color, outline=self.color)
             if n == 1:

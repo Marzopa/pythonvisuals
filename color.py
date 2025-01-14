@@ -1,6 +1,5 @@
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 import numpy as np
-from typing import Callable
 
 
 def randomize_modifier(frame: np.ndarray, t: int = 10) -> np.ndarray:
@@ -21,6 +20,19 @@ def randomize_modifier(frame: np.ndarray, t: int = 10) -> np.ndarray:
     return modified_frame
 
 
-def glow_modifier():
-    pass
+def glow_modifier(frame: Image, radius: float = 10.0) -> Image:
+    """
+    Applies glow effect to Image object
+    :param frame: An Image object (representing a frame of video)
+    :param radius: the radius to apply blur with
+    :return: the modified Image object with glow effect applied
+    """
+    # Create a blurred copy of the image
+    blurred_image = frame.filter(ImageFilter.GaussianBlur(radius=radius))
+
+    # Blend the original image with the blurred image
+    glow_image = Image.blend(frame, blurred_image, 0.5)
+
+    return glow_image
+
 

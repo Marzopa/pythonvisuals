@@ -21,6 +21,7 @@ def test_pixel_changer():
 def test_filters():
     pass
 
+
 class MyTestCase(unittest.TestCase):
     pass
 
